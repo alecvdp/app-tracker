@@ -1,44 +1,46 @@
-# Product Context: Next.js Starter Template
+# Product Context: App Tracker
 
-## Why This Template Exists
+## Why This App Exists
 
-Starting a new Next.js project involves boilerplate setup, configuration decisions, and establishing patterns. This template provides a clean, opinionated starting point that eliminates setup friction and establishes best practices from the start. It's optimized for AI-assisted development, where an AI can quickly extend the template based on user requirements.
+Managing multiple app subscriptions can be overwhelming. Users subscribe to apps across different platforms (iOS, Android, Web, etc.) and lose track of what they're paying for, when renewals are due, and which apps they still actively use. This app provides a centralized place to track all apps and their subscription details.
 
 ## Problems It Solves
 
-1. **Setup Time**: Eliminates boilerplate configuration (TypeScript, Tailwind, ESLint)
-2. **Decision Fatigue**: Pre-made choices for tooling and patterns
-3. **AI Context**: Memory bank provides persistent context for AI assistants
-4. **Extensibility**: Recipe system for adding common features
-5. **Consistency**: Standardized project structure and conventions
+1. **Subscription Overload**: Track which apps are free vs. paid and their subscription plans
+2. **Due Date Tracking**: Know when subscriptions renew to avoid surprise charges
+3. **Platform Awareness**: See which platforms each app is available on
+4. **Usage Clarity**: Categorize apps by status (using, not using, watching, sunset)
+5. **Organization**: Search and filter through apps quickly
 
-## How It Should Work (User Flow)
+## How It Works (User Flow)
 
-1. User starts with this template
-2. User describes what they want to build to AI assistant
-3. AI adds pages, components, and features as needed
-4. AI uses recipes for common additions (database, auth)
-5. User previews changes via hot reload
-6. Iterate until satisfied
-7. Deploy
+1. User opens the App Tracker dashboard
+2. User sees a grid of all their tracked apps with status badges
+3. User can filter by status (All, Using, Not Using, Watching, Sunset)
+4. User can search by app name or notes
+5. User clicks "Add App" to open the form modal
+6. User fills in: name, pricing type, subscription plan, due date, platforms, status, notes
+7. App appears in the grid with appropriate badges and due date indicators
+8. User can edit or delete apps from the card
 
 ## Key User Experience Goals
 
-- **Zero to Feature Fast**: Get building immediately, no setup required
-- **AI-Friendly**: Memory bank and recipes make AI assistance effective
-- **Flexible Foundation**: Can become any type of application
-- **Best Practices Built-In**: TypeScript strict mode, ESLint, clean structure
+- **Dark Theme**: Comfortable viewing with dark neutral palette
+- **At-a-Glance**: Status badges and due date indicators visible on cards
+- **Quick Entry**: Modal form for fast app additions
+- **Flexible Filtering**: Combine search with status filters
+- **Due Date Alerts**: Visual indicators for overdue and upcoming renewals
 
-## What This Template Provides
+## Data Model
 
-1. **Clean App Structure**: Single page ready for expansion
-2. **Type Safety**: Full TypeScript setup with strict mode
-3. **Modern Styling**: Tailwind CSS 4 ready to use
-4. **Code Quality**: ESLint configured
-5. **Extensibility**: Recipe system for common features
+### App Properties
 
-## Integration Points
-
-- **Database**: Use add-database recipe for Drizzle + SQLite
-- **Styling**: Tailwind CSS pre-configured
-- **AI Assistance**: Memory bank for context persistence
+| Property | Type | Description |
+|----------|------|-------------|
+| name | text | App name |
+| pricingType | enum | "free" or "paid" |
+| subscriptionPlan | text (optional) | "monthly", "yearly", "one-time" |
+| nextDueDate | date (optional) | Next renewal date |
+| platforms | text | Comma-separated platform list |
+| status | enum | "using", "not_using", "watching", "sunset" |
+| notes | text (optional) | Additional notes |

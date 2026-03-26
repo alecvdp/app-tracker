@@ -1,4 +1,4 @@
-# System Patterns: Next.js Starter Template
+# System Patterns: App Tracker
 
 ## Architecture Overview
 
@@ -6,13 +6,25 @@
 src/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx          # Root layout + metadata
-│   ├── page.tsx            # Home page
+│   ├── page.tsx            # Home page (server component, fetches apps)
 │   ├── globals.css         # Tailwind imports + global styles
-│   └── favicon.ico         # Site icon
-└── (expand as needed)
-    ├── components/         # React components (add when needed)
-    ├── lib/                # Utilities and helpers (add when needed)
-    └── db/                 # Database files (add via recipe)
+│   ├── favicon.ico         # Site icon
+│   └── api/                # API routes
+│       └── apps/
+│           ├── route.ts         # GET (list) / POST (create)
+│           └── [id]/
+│               └── route.ts     # GET / PUT / DELETE by ID
+├── components/             # React components
+│   ├── AppListClient.tsx   # Main list with filtering (client)
+│   ├── AppCard.tsx         # App display card (client)
+│   └── AppForm.tsx         # Add/edit modal form (client)
+├── db/                     # Database layer
+│   ├── schema.ts           # Drizzle schema (apps table)
+│   ├── index.ts            # Database client
+│   ├── migrate.ts          # Migration runner
+│   └── migrations/         # Generated SQL migrations
+└── lib/                    # Utilities
+    └── types.ts            # Shared types, constants, configs
 ```
 
 ## Key Design Patterns
@@ -22,99 +34,64 @@ src/
 Uses Next.js App Router with file-based routing:
 ```
 src/app/
-├── page.tsx           # Route: /
-├── about/page.tsx     # Route: /about
-├── blog/
-│   ├── page.tsx       # Route: /blog
-│   └── [slug]/page.tsx # Route: /blog/:slug
+├── page.tsx           # Route: / (main dashboard)
 └── api/
-    └── route.ts       # API Route: /api
+    └── apps/
+        ├── route.ts       # API: /api/apps
+        └── [id]/
+            └── route.ts   # API: /api/apps/:id
 ```
 
-### 2. Component Organization Pattern (When Expanding)
+### 2. Server/Client Component Split
 
-```
-src/components/
-├── ui/                # Reusable UI components (Button, Card, etc.)
-├── layout/            # Layout components (Header, Footer)
-├── sections/          # Page sections (Hero, Features, etc.)
-└── forms/             # Form components
-```
+- `page.tsx` is a **Server Component** that fetches initial data from the database
+- `AppListClient.tsx` is a **Client Component** that manages state and interactivity
+- `AppCard.tsx` and `AppForm.tsx` are **Client Components** for UI interactions
 
-### 3. Server Components by Default
+### 3. API Route Pattern
 
-All components are Server Components unless marked with `"use client"`:
-```tsx
-// Server Component (default) - can fetch data, access DB
-export default function Page() {
-  return <div>Server rendered</div>;
-}
+All API routes follow RESTful conventions:
+- `GET /api/apps` - List all apps (ordered by updated_at desc)
+- `POST /api/apps` - Create a new app
+- `GET /api/apps/:id` - Get a single app
+- `PUT /api/apps/:id` - Update an app
+- `DELETE /api/apps/:id` - Delete an app
 
-// Client Component - for interactivity
-"use client";
-export default function Counter() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
-}
-```
+### 4. Database Pattern
 
-### 4. Layout Pattern
-
-Layouts wrap pages and can be nested:
-```tsx
-// src/app/layout.tsx - Root layout
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
-}
-
-// src/app/dashboard/layout.tsx - Nested layout
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <main>{children}</main>
-    </div>
-  );
-}
-```
+- Drizzle ORM with SQLite via `@kilocode/app-builder-db`
+- Schema defined in `src/db/schema.ts`
+- Migrations auto-generated with `drizzle-kit`
+- Database operations in Server Components and API routes only
 
 ## Styling Conventions
 
 ### Tailwind CSS Usage
+- Dark theme with neutral palette (neutral-950, neutral-900, neutral-800, etc.)
+- Status-specific colors: emerald (using/watching), blue (paid), amber (due soon), red (overdue/sunset)
 - Utility classes directly on elements
-- Component composition for repeated patterns
 - Responsive: `sm:`, `md:`, `lg:`, `xl:`
 
-### Common Patterns
+### Component Styling Pattern
 ```tsx
-// Container
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+// Status badge with dynamic colors
+<span className={`${statusConfig.bg} ${statusConfig.color}`}>
+  {statusConfig.label}
+</span>
 
-// Responsive grid
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-// Flexbox centering
-<div className="flex items-center justify-center">
+// Card with hover effect
+<div className="bg-neutral-900 border border-neutral-800 rounded-xl hover:border-neutral-700 transition-colors">
 ```
 
 ## File Naming Conventions
 
-- Components: PascalCase (`Button.tsx`, `Header.tsx`)
-- Utilities: camelCase (`utils.ts`, `helpers.ts`)
-- Pages/Routes: lowercase (`page.tsx`, `layout.tsx`)
-- Directories: kebab-case (`api-routes/`) or lowercase (`components/`)
+- Components: PascalCase (`AppCard.tsx`, `AppForm.tsx`)
+- Utilities: camelCase (`types.ts`)
+- Pages/Routes: lowercase (`page.tsx`, `layout.tsx`, `route.ts`)
+- Directories: kebab-case (`api/apps/[id]`)
 
 ## State Management
 
-For simple needs:
-- `useState` for local component state
-- `useContext` for shared state
-- Server Components for data fetching
-
-For complex needs (add when necessary):
-- Zustand for client state
-- React Query for server state
+- `useState` for local component state (form fields, filters, search)
+- Server Components for initial data fetching (database)
+- Client-side fetching for CRUD operations via `fetch('/api/apps')`

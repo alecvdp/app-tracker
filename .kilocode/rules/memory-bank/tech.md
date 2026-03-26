@@ -2,13 +2,15 @@
 
 ## Technology Stack
 
-| Technology   | Version | Purpose                         |
-| ------------ | ------- | ------------------------------- |
-| Next.js      | 16.x    | React framework with App Router |
-| React        | 19.x    | UI library                      |
-| TypeScript   | 5.9.x   | Type-safe JavaScript            |
-| Tailwind CSS | 4.x     | Utility-first CSS               |
-| Bun          | Latest  | Package manager & runtime       |
+| Technology              | Version | Purpose                         |
+| ----------------------- | ------- | ------------------------------- |
+| Next.js                 | 16.x    | React framework with App Router |
+| React                   | 19.x    | UI library                      |
+| TypeScript              | 5.9.x   | Type-safe JavaScript            |
+| Tailwind CSS            | 4.x     | Utility-first CSS               |
+| Bun                     | Latest  | Package manager & runtime       |
+| Drizzle ORM             | 0.45.x  | Type-safe SQL ORM               |
+| @kilocode/app-builder-db| latest  | SQLite database driver          |
 
 ## Development Environment
 
@@ -26,6 +28,8 @@ bun build          # Production build
 bun start          # Start production server
 bun lint           # Run ESLint
 bun typecheck      # Run TypeScript type checking
+bun db:generate    # Generate Drizzle migrations
+bun db:migrate     # Run migrations (auto in sandbox)
 ```
 
 ## Project Configuration
@@ -59,7 +63,9 @@ bun typecheck      # Run TypeScript type checking
 {
   "next": "^16.1.3", // Framework
   "react": "^19.2.3", // UI library
-  "react-dom": "^19.2.3" // React DOM
+  "react-dom": "^19.2.3", // React DOM
+  "drizzle-orm": "^0.45.1", // ORM
+  "@kilocode/app-builder-db": "github:Kilo-Org/app-builder-db#main" // SQLite driver
 }
 ```
 
@@ -74,7 +80,8 @@ bun typecheck      # Run TypeScript type checking
   "@tailwindcss/postcss": "^4.1.17",
   "tailwindcss": "^4.1.17",
   "eslint": "^9.39.1",
-  "eslint-config-next": "^16.0.0"
+  "eslint-config-next": "^16.0.0",
+  "drizzle-kit": "^0.31.10"
 }
 ```
 
@@ -89,22 +96,38 @@ bun typecheck      # Run TypeScript type checking
 ├── tsconfig.json           # TypeScript configuration
 ├── postcss.config.mjs      # PostCSS (Tailwind) config
 ├── eslint.config.mjs       # ESLint configuration
+├── drizzle.config.ts       # Drizzle ORM configuration
 ├── public/                 # Static assets
 │   └── .gitkeep
 └── src/                    # Source code
-    └── app/                # Next.js App Router
-        ├── layout.tsx      # Root layout
-        ├── page.tsx        # Home page
-        ├── globals.css     # Global styles
-        └── favicon.ico     # Site icon
+    ├── app/                # Next.js App Router
+    │   ├── layout.tsx      # Root layout
+    │   ├── page.tsx        # Home page (server component)
+    │   ├── globals.css     # Global styles
+    │   ├── favicon.ico     # Site icon
+    │   └── api/            # API routes
+    │       └── apps/
+    │           ├── route.ts      # GET/POST apps
+    │           └── [id]/route.ts # GET/PUT/DELETE app by ID
+    ├── components/         # React components
+    │   ├── AppListClient.tsx  # Main app list (client)
+    │   ├── AppCard.tsx        # App display card
+    │   └── AppForm.tsx        # Add/edit modal form
+    ├── db/                 # Database layer
+    │   ├── schema.ts       # Drizzle schema definitions
+    │   ├── index.ts        # Database client
+    │   ├── migrate.ts      # Migration runner
+    │   └── migrations/     # Generated migrations
+    └── lib/                # Utilities
+        └── types.ts        # Shared types and constants
 ```
 
 ## Technical Constraints
 
 ### Starting Point
 
-- Minimal structure - expand as needed
-- No database by default (use recipe to add)
+- App Tracker feature implemented
+- SQLite database with Drizzle ORM for data persistence
 - No authentication by default (add when needed)
 
 ### Browser Support
