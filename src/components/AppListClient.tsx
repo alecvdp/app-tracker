@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { App, AppStatus, STATUS_CONFIG } from "@/lib/types";
 import AppCard from "./AppCard";
 import AppForm from "./AppForm";
@@ -16,22 +16,26 @@ export default function AppListClient({ initialApps }: AppListClientProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingApp, setEditingApp] = useState<App | null>(null);
 
-  const filteredApps = apps.filter((app) => {
-    const matchesFilter = filter === "all" || app.status === filter;
-    const matchesSearch =
-      search === "" ||
-      app.name.toLowerCase().includes(search.toLowerCase()) ||
-      (app.notes?.toLowerCase().includes(search.toLowerCase()) ?? false);
-    return matchesFilter && matchesSearch;
-  });
+  const filteredApps = useMemo(() => {
+    return apps.filter((app) => {
+      const matchesFilter = filter === "all" || app.status === filter;
+      const matchesSearch =
+        search === "" ||
+        app.name.toLowerCase().includes(search.toLowerCase()) ||
+        (app.notes?.toLowerCase().includes(search.toLowerCase()) ?? false);
+      return matchesFilter && matchesSearch;
+    });
+  }, [apps, filter, search]);
 
-  const statusCounts = apps.reduce(
-    (acc, app) => {
-      acc[app.status] = (acc[app.status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<AppStatus, number>
-  );
+  const statusCounts = useMemo(() => {
+    return apps.reduce(
+      (acc, app) => {
+        acc[app.status] = (acc[app.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<AppStatus, number>
+    );
+  }, [apps]);
 
   async function refreshApps() {
     try {
