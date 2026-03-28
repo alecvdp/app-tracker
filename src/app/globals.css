@@ -1,1 +1,268 @@
 @import "tailwindcss";
+
+/* Theme CSS Variables - Default (Warm Light) */
+:root {
+  --bg-primary: #F5F0E8;
+  --bg-secondary: #EDE7DB;
+  --bg-tertiary: #E4DCCE;
+  --text-primary: #3B3228;
+  --text-muted: #7A6E5E;
+  --text-faint: #A89F91;
+  --accent-primary: #B0704F;
+  --accent-secondary: #7B8F6B;
+  --accent-tertiary: #6B7FA0;
+  --border-color: #D6CBBA;
+}
+
+/* Base Styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Override Tailwind with CSS variables */
+.bg-neutral-950 {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-neutral-900 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-neutral-800 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.text-white {
+  color: var(--text-primary) !important;
+}
+
+.text-neutral-400,
+.text-neutral-500,
+.text-neutral-600 {
+  color: var(--text-muted) !important;
+}
+
+.text-neutral-700 {
+  color: var(--text-faint) !important;
+}
+
+.border-neutral-800 {
+  border-color: var(--border-color) !important;
+}
+
+.border-neutral-700 {
+  border-color: var(--border-color) !important;
+}
+
+.border-neutral-600 {
+  border-color: var(--border-color) !important;
+}
+
+.bg-neutral-900 {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Form elements */
+input, select, textarea {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-faint);
+}
+
+/* Button primary */
+.bg-blue-600 {
+  background-color: var(--accent-primary) !important;
+}
+
+.bg-blue-500 {
+  background-color: var(--accent-primary) !important;
+}
+
+.bg-blue-500\/10 {
+  background-color: color-mix(in srgb, var(--accent-primary) 10%, transparent) !important;
+}
+
+.border-blue-500\/30 {
+  border-color: color-mix(in srgb, var(--accent-primary) 30%, transparent) !important;
+}
+
+.text-blue-400 {
+  color: var(--accent-primary) !important;
+}
+
+/* Emerald (success/free) */
+.bg-emerald-500\/10 {
+  background-color: color-mix(in srgb, var(--accent-secondary) 10%, transparent) !important;
+}
+
+.border-emerald-500\/20 {
+  border-color: color-mix(in srgb, var(--accent-secondary) 20%, transparent) !important;
+}
+
+.text-emerald-400 {
+  color: var(--accent-secondary) !important;
+}
+
+/* Purple (category) */
+.bg-purple-500\/10 {
+  background-color: color-mix(in srgb, var(--accent-tertiary) 10%, transparent) !important;
+}
+
+.border-purple-500\/30 {
+  border-color: color-mix(in srgb, var(--accent-tertiary) 30%, transparent) !important;
+}
+
+.text-purple-400 {
+  color: var(--accent-tertiary) !important;
+}
+
+/* Amber (warning) */
+.bg-amber-500\/10 {
+  background-color: color-mix(in srgb, var(--accent-primary) 10%, transparent) !important;
+}
+
+.border-amber-500\/20 {
+  border-color: color-mix(in srgb, var(--accent-primary) 20%, transparent) !important;
+}
+
+.text-amber-400 {
+  color: var(--accent-primary) !important;
+}
+
+/* Red (danger) */
+.text-red-400 {
+  color: #E64553 !important;
+}
+
+/* Cyan (tags) */
+.bg-cyan-500\/10 {
+  background-color: color-mix(in srgb, var(--accent-tertiary) 10%, transparent) !important;
+}
+
+.border-cyan-500\/30 {
+  border-color: color-mix(in srgb, var(--accent-tertiary) 30%, transparent) !important;
+}
+
+.text-cyan-400 {
+  color: var(--accent-tertiary) !important;
+}
+
+/* Focus states */
+.focus\:ring-blue-500:focus {
+  --tw-ring-color: var(--accent-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* Modal backdrop */
+.bg-black\/60 {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Selection */
+::selection {
+  background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  button, 
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing on mobile */
+  .max-w-6xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Form inputs - larger touch targets */
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Modal - full screen on mobile */
+  .fixed.inset-0.z-50 > div {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  /* Cards - full width on mobile */
+  .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 > div {
+    width: 100%;
+  }
+  
+  /* Filter buttons - scrollable row */
+  .flex.flex-wrap.gap-2 {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Header - compact on mobile */
+  .max-w-6xl.mx-auto.px-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  /* App cards - reduce padding on mobile */
+  .bg-neutral-900.border.border-neutral-800.rounded-xl.p-5 {
+    padding: 1rem;
+  }
+  
+  /* Dashboard cards - stack on mobile */
+  .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: max(0px)) {
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
