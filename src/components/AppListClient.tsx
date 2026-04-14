@@ -17,12 +17,14 @@ export default function AppListClient({ initialApps }: AppListClientProps) {
   const [editingApp, setEditingApp] = useState<App | null>(null);
 
   const filteredApps = useMemo(() => {
+    const lowerSearch = search.toLowerCase();
+
     return apps.filter((app) => {
       const matchesFilter = filter === "all" || app.status === filter;
       const matchesSearch =
         search === "" ||
-        app.name.toLowerCase().includes(search.toLowerCase()) ||
-        (app.notes?.toLowerCase().includes(search.toLowerCase()) ?? false);
+        app.name.toLowerCase().includes(lowerSearch) ||
+        (app.notes?.toLowerCase().includes(lowerSearch) ?? false);
       return matchesFilter && matchesSearch;
     });
   }, [apps, filter, search]);
