@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { App, AppStatus, STATUS_CONFIG, CATEGORY_OPTIONS } from "@/lib/types";
 import AppCard from "./AppCard";
 import AppForm from "./AppForm";
@@ -25,51 +25,66 @@ export default function AppListClient({ initialApps }: AppListClientProps) {
   const [showTodoist, setShowTodoist] = useState(false);
 
   // Get all unique tags from apps
-  const allTags = Array.from(
-    new Set(
-      apps
-        .flatMap((app) =>
-          app.tags ? app.tags.split(",").filter(Boolean) : []
+  const allTags = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          apps.flatMap((app) =>
+            app.tags ? app.tags.split(",").filter(Boolean) : []
+          )
         )
-    )
-  ).sort();
-
-  const filteredApps = apps.filter((app) => {
-    const matchesFilter = filter === "all" || app.status === filter;
-    const matchesCategory =
-      categoryFilter === "all" ||
-      (categoryFilter === "none" && !app.category) ||
-      app.category === categoryFilter;
-    const matchesTag =
-      !tagFilter ||
-      (app.tags &&
-        app.tags
-          .split(",")
-          .map((t) => t.trim().toLowerCase())
-          .includes(tagFilter.toLowerCase()));
-    const matchesSearch =
-      !search ||
-      app.name.toLowerCase().includes(search.toLowerCase()) ||
-      (app.notes?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
-      (app.category?.toLowerCase().includes(search.toLowerCase()) ?? false);
-    return matchesFilter && matchesCategory && matchesTag && matchesSearch;
-  });
-
-  const statusCounts = apps.reduce(
-    (acc, app) => {
-      acc[app.status] = (acc[app.status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<AppStatus, number>
+      ).sort(),
+    [apps]
   );
 
-  const categoryCounts = apps.reduce(
-    (acc, app) => {
-      const cat = app.category || "none";
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
+  const filteredApps = useMemo(() => {
+    const lowerSearch = search.toLowerCase();
+
+    return apps.filter((app) => {
+      const matchesFilter = filter === "all" || app.status === filter;
+      const matchesCategory =
+        categoryFilter === "all" ||
+        (categoryFilter === "none" && !app.category) ||
+        app.category === categoryFilter;
+      const matchesTag =
+        !tagFilter ||
+        (app.tags &&
+          app.tags
+            .split(",")
+            .map((t) => t.trim().toLowerCase())
+            .includes(tagFilter.toLowerCase()));
+      const matchesSearch =
+        !search ||
+        app.name.toLowerCase().includes(lowerSearch) ||
+        (app.notes?.toLowerCase().includes(lowerSearch) ?? false) ||
+        (app.category?.toLowerCase().includes(lowerSearch) ?? false);
+      return matchesFilter && matchesCategory && matchesTag && matchesSearch;
+    });
+  }, [apps, filter, categoryFilter, tagFilter, search]);
+
+  const statusCounts = useMemo(
+    () =>
+      apps.reduce(
+        (acc, app) => {
+          acc[app.status] = (acc[app.status] || 0) + 1;
+          return acc;
+        },
+        {} as Record<AppStatus, number>
+      ),
+    [apps]
+  );
+
+  const categoryCounts = useMemo(
+    () =>
+      apps.reduce(
+        (acc, app) => {
+          const cat = app.category || "none";
+          acc[cat] = (acc[cat] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    [apps]
   );
 
   async function refreshApps() {
@@ -321,7 +336,7 @@ export default function AppListClient({ initialApps }: AppListClientProps) {
               {tagFilter && (
                 <button
                   onClick={() => setTagFilter("")}
-className="px-2 py-1 rounded text-xs text-neutral-500 hover:text-white"
+                  className="px-2 py-1 rounded text-xs text-neutral-500 hover:text-white"
                 >
                   Clear
                 </button>
