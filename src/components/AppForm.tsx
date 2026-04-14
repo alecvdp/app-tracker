@@ -8,8 +8,6 @@ import {
   ALL_PLATFORMS,
   STATUS_CONFIG,
   SUBSCRIPTION_PLANS,
-  CATEGORY_OPTIONS,
-  AppCategory,
 } from "@/lib/types";
 
 interface AppFormProps {
@@ -26,21 +24,10 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
   const [subscriptionPlan, setSubscriptionPlan] = useState(
     app?.subscriptionPlan || ""
   );
-  const [monthlyCost, setMonthlyCost] = useState(
-    app?.monthlyCost?.toString() || ""
-  );
-  const [yearlyCost, setYearlyCost] = useState(
-    app?.yearlyCost?.toString() || ""
-  );
   const [nextDueDate, setNextDueDate] = useState(app?.nextDueDate || "");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(
-    app?.platforms ? app.platforms.split(",").filter(Boolean) : []
+    app?.platforms ? app.platforms.split(",") : []
   );
-  const [category, setCategory] = useState<string>(app?.category || "");
-  const [tagsInput, setTagsInput] = useState(
-    app?.tags ? app.tags.split(",").filter(Boolean).join(", ") : ""
-  );
-  const [releaseDate, setReleaseDate] = useState(app?.releaseDate || "");
   const [status, setStatus] = useState<AppStatus>(app?.status || "using");
   const [notes, setNotes] = useState(app?.notes || "");
   const [saving, setSaving] = useState(false);
@@ -77,13 +64,8 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
         name: name.trim(),
         pricingType,
         subscriptionPlan: pricingType === "paid" ? subscriptionPlan : null,
-        monthlyCost: pricingType === "paid" && monthlyCost ? monthlyCost : null,
-        yearlyCost: pricingType === "paid" && yearlyCost ? yearlyCost : null,
         nextDueDate: pricingType === "paid" && nextDueDate ? nextDueDate : null,
         platforms: selectedPlatforms.join(","),
-        category: category || null,
-        tags: tagsInput,
-        releaseDate: releaseDate || null,
         status,
         notes: notes.trim() || null,
       };
@@ -151,7 +133,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* App Name */}
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                 App Name *
@@ -165,26 +146,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               />
             </div>
 
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1.5">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">None</option>
-                {CATEGORY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Pricing */}
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                 Pricing
@@ -209,9 +170,8 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               </div>
             </div>
 
-            {pricingType === "paid" &&(
+            {pricingType === "paid" && (
               <>
-                {/* Subscription Plan */}
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                     Subscription Plan
@@ -229,49 +189,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
                   </select>
                 </div>
 
-                {/* Costs */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-300 mb-1.5">
-                      Monthly Cost
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">
-                        $
-                      </span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={monthlyCost}
-                        onChange={(e) => setMonthlyCost(e.target.value)}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-7 pr-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
-<div>
-                    <label className="block text-sm font-medium text-neutral-300 mb-1.5">
-                      Yearly Cost
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">
-                        $
-                      </span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={yearlyCost}
-                        onChange={(e) => setYearlyCost(e.target.value)}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-7 pr-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Next Due Date */}
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                     Next Due Date
@@ -286,20 +203,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               </>
             )}
 
-            {/* Release Date (for unreleased apps) */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1.5">
-                Release Date
-              </label>
-              <input
-                type="date"
-                value={releaseDate}
-                onChange={(e) => setReleaseDate(e.target.value)}
-                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Platforms */}
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                 Platforms
@@ -322,24 +225,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               </div>
             </div>
 
-            {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1.5">
-                Tags
-              </label>
-              <input
-                type="text"
-                value={tagsInput}
-                onChange={(e) => setTagsInput(e.target.value)}
-                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., AI, open-source, GPU-intensive"
-              />
-              <p className="mt-1 text-xs text-neutral-500">
-                Separate tags with commas
-              </p>
-            </div>
-
-            {/* Status */}
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                 Status
@@ -365,7 +250,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               </div>
             </div>
 
-            {/* Notes */}
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-1.5">
                 Notes
@@ -379,7 +263,6 @@ export default function AppForm({ app, onClose, onSaved }: AppFormProps) {
               />
             </div>
 
-            {/* Actions */}
             <div className="flex gap-3 pt-2">
               <button
                 type="button"

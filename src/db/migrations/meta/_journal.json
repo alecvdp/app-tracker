@@ -8,13 +8,6 @@
       "when": 1774543247280,
       "tag": "0000_noisy_cloak",
       "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1774618592028,
-      "tag": "0001_uneven_luckman",
-      "breakpoints": true
     }
   ]
 }

@@ -9,27 +9,13 @@ export type Platform =
   | "Windows"
   | "Linux";
 
-export type AppCategory =
-  | "dev_tools"
-  | "health"
-  | "finance"
-  | "productivity"
-  | "social"
-  | "entertainment"
-  | "games";
-
 export interface App {
   id: number;
   name: string;
   pricingType: PricingType;
   subscriptionPlan: string | null;
-  monthlyCost: number | null;
-  yearlyCost: number | null;
   nextDueDate: string | null;
   platforms: string;
-  category: string | null;
-  tags: string;
-  releaseDate: string | null;
   status: AppStatus;
   notes: string | null;
   createdAt: Date;
@@ -45,40 +31,14 @@ export const ALL_PLATFORMS: Platform[] = [
   "Linux",
 ];
 
-export const CATEGORY_OPTIONS: { value: AppCategory; label: string }[] = [
-  { value: "dev_tools", label: "Dev Tools" },
-  { value: "health", label: "Health" },
-  { value: "finance", label: "Finance" },
-  { value: "productivity", label: "Productivity" },
-  { value: "social", label: "Social" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "games", label: "Games" },
-];
-
 export const STATUS_CONFIG: Record<
   AppStatus,
   { label: string; color: string; bg: string }
 > = {
-  using: {
-    label: "Using",
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10 border-emerald-500/20",
-  },
-  not_using: {
-    label: "Not Using",
-    color: "text-neutral-400",
-    bg: "bg-neutral-500/10 border-neutral-500/20",
-  },
-  watching: {
-    label: "Watching",
-    color: "text-amber-400",
-    bg: "bg-amber-500/10 border-amber-500/20",
-  },
-  sunset: {
-    label: "Sunset",
-    color: "text-red-400",
-    bg: "bg-red-500/10 border-red-500/20",
-  },
+  using: { label: "Using", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  not_using: { label: "Not Using", color: "text-neutral-400", bg: "bg-neutral-500/10 border-neutral-500/20" },
+  watching: { label: "Watching", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20" },
+  sunset: { label: "Sunset", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" },
 };
 
 export const SUBSCRIPTION_PLANS: { value: string; label: string }[] = [
