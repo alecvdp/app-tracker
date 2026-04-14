@@ -50,6 +50,13 @@ export async function PUT(
       notes,
     } = body;
 
+    if (!name || typeof name !== "string") {
+      return NextResponse.json(
+        { error: "App name is required" },
+        { status: 400 }
+      );
+    }
+
     const now = new Date();
     const [updatedApp] = await db
       .update(apps)
