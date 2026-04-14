@@ -39,11 +39,23 @@ export async function PUT(
       name,
       pricingType,
       subscriptionPlan,
+      monthlyCost,
+      yearlyCost,
       nextDueDate,
       platforms,
+      category,
+      tags,
+      releaseDate,
       status,
       notes,
     } = body;
+
+    if (!name || typeof name !== "string") {
+      return NextResponse.json(
+        { error: "App name is required" },
+        { status: 400 }
+      );
+    }
 
     const now = new Date();
     const [updatedApp] = await db
@@ -52,8 +64,13 @@ export async function PUT(
         name,
         pricingType,
         subscriptionPlan: subscriptionPlan || null,
+        monthlyCost: monthlyCost ? parseFloat(monthlyCost) : null,
+        yearlyCost: yearlyCost ? parseFloat(yearlyCost) : null,
         nextDueDate: nextDueDate || null,
         platforms: Array.isArray(platforms) ? platforms.join(",") : platforms || "",
+        category: category || null,
+        tags: Array.isArray(tags) ? tags.join(",") : tags || "",
+        releaseDate: releaseDate || null,
         status,
         notes: notes || null,
         updatedAt: now,
